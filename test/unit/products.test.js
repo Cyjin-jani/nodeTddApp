@@ -12,6 +12,9 @@
 const productController = require('../../controller/products');
 const productModel = require('../../models/Product');
 
+const httpMocks = require('node-mocks-http'); // http req, res객체를 생성하기 위한 패키지
+const newProduct = require('../data/new-product.json');
+
 productModel.create = jest.fn(); // spy...를 통해 실제 모델에서 create함수가 호출이 되었는지 유무를 체크한다.
 
 describe('Product Controller Create', () => {
@@ -22,7 +25,12 @@ describe('Product Controller Create', () => {
 
   // 메서드 호출 테스트
   it('should call ProductModel.create', () => {
-    productController.createProduct(); // productController에서 createProduct를 호출할 때,
-    expect(productModel.create).toBeCalled(); // productModel의 create 함수가 호출이 되는 지 테스트.
+    let req = httpMocks.createRequest();
+    let res = httpMocks.createResponse();
+    let next = null;
+
+    req.body = newProduct;
+    productController.createProduct(req, res, next); // productController에서 createProduct를 호출할 때,
+    expect(productModel.create).toBeCalledWith(newProduct); // productModel의 create 함수가 호출이 되는 지 테스트.
   });
 });
