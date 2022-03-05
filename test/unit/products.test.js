@@ -37,23 +37,23 @@ describe('Product Controller Create', () => {
   });
 
   // 메서드 호출 테스트
-  it('should call ProductModel.create', () => {
-    productController.createProduct(req, res, next); // productController에서 createProduct를 호출할 때,
+  it('should call ProductModel.create', async () => {
+    await productController.createProduct(req, res, next); // productController에서 createProduct를 호출할 때,
     expect(productModel.create).toBeCalledWith(newProduct); // productModel의 create 함수가 호출이 되는 지 테스트.
   });
 
   // 상태 값 테스트
-  it('should return 201 response code', () => {
-    productController.createProduct(req, res, next);
+  it('should return 201 response code', async () => {
+    await productController.createProduct(req, res, next);
     expect(res.statusCode).toBe(201); // 201 code를 response로 보내야 한다.
     expect(res._isEndCalled()).toBeTruthy(); // _isEndCalled는 mock http 패키지 메서드이다.
     // response status code와 함께 send()로 데이터를 보낼 수 있어, 해당 부분을 확인하는 expect구문이다.
   });
 
-  it('should return json body in response', () => {
+  it('should return json body in response', async () => {
     // 이미 jest.fn()으로 mock함수를 만들었기에, mockReturnValue를 사용하여 가짜 return 값(json data)을 만들어 준다.
     productModel.create.mockReturnValue(newProduct);
-    productController.createProduct(req, res, next);
+    await productController.createProduct(req, res, next);
     expect(res._getJSONData()).toStrictEqual(newProduct);
   });
 });
