@@ -23,7 +23,7 @@ beforeEach(() => {
   // 여기는 글로벌 beforeEach입니다. 각 describe가 실행될 때 실행을 한다.
   req = httpMocks.createRequest();
   res = httpMocks.createResponse();
-  next = null;
+  next = jest.fn();
 });
 
 describe('Product Controller Create', () => {
@@ -55,5 +55,15 @@ describe('Product Controller Create', () => {
     productModel.create.mockReturnValue(newProduct);
     await productController.createProduct(req, res, next);
     expect(res._getJSONData()).toStrictEqual(newProduct);
+  });
+
+  it('should handle errors', async () => {
+    // mongoDB에 의존하지 않기 위해 임의로 에러 메세지를 만들어 준다.
+    const errorMsg = { message: 'description property is missing' };
+    const rejectedPromise = Promise.reject(errorMsg);
+    productModel.create.mockReturnValue(rejectedPromise);
+    // express 에서는 비동기요청의 경우, 에러 핸들링을 위한 콜백함수가 필요하다. 그 부분을 next로 처리하기 때문에 next가 필요하다.
+    await productController.createProduct(req, res, next);
+    expect(next).toBeCalledWith(errorMsg);
   });
 });
