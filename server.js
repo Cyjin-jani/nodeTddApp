@@ -23,6 +23,11 @@ app.get('/', (req, res) => {
   res.send('Hello World');
 });
 
+// error handle을 위한 미들웨어
+app.use((error, req, res, next) => {
+  res.status(500).json({ message: error.message });
+});
+
 app.listen(PORT);
 
 console.log(`Running on port ${PORT}`);

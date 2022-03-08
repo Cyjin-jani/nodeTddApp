@@ -11,3 +11,17 @@ it('POST /api/products', async () => {
   expect(response.body.name).toBe(newProduct.name);
   expect(response.body.description).toBe(newProduct.description);
 });
+
+it('should return 500 on POST /api/products', async () => {
+  const response = await request(app)
+    .post('/api/products')
+    .send({ name: 'glove', price: 15 });
+
+  expect(response.statusCode).toBe(500); // server error
+
+  // description이 required이기 때문에, 아래 에러 메세지가 발생.
+  expect(response.body).toStrictEqual({
+    message:
+      'Product validation failed: description: Path `description` is required.',
+  });
+});
