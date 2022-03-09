@@ -20,7 +20,7 @@ exports.createProduct = async (req, res, next) => {
 
 exports.getProducts = async (req, res, next) => {
   try {
-    // await productModel.get();
+    await productModel.find({});
   } catch (error) {
     console.log(error);
   }

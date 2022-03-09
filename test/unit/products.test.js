@@ -16,6 +16,7 @@ const httpMocks = require('node-mocks-http'); // http req, res객체를 생성�
 const newProduct = require('../data/new-product.json');
 
 productModel.create = jest.fn(); // spy...를 통해 실제 모델에서 create함수가 호출이 되었는지 유무를 체크한다.
+productModel.find = jest.fn();
 
 // 테스트에서 반복되는 부분들을 미리 실행해주는 beforeEach메서드
 let req, res, next;
@@ -68,8 +69,15 @@ describe('Product Controller Create', () => {
   });
 });
 
+// Get products 관련 테스트
 describe('Product Controller Get', () => {
+  // 해당 함수가 존재하는지
   it('should have a getProducts function', () => {
     expect(typeof productController.getProducts).toBe('function');
+  });
+
+  it('should call ProductModel.find({})', async () => {
+    await productController.getProducts(req, res, next);
+    expect(productModel.find).toHaveBeenCalledWith({});
   });
 });
