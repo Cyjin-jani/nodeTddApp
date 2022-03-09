@@ -17,3 +17,11 @@ exports.createProduct = async (req, res, next) => {
     // 비동기에서는 에러 핸들링을 따로 해줄 수 없기에 next메서드에 에러를 보내주어야 한다.
   }
 };
+
+exports.getProducts = async (req, res, next) => {
+  try {
+    // await productModel.get();
+  } catch (error) {
+    console.log(error);
+  }
+};
