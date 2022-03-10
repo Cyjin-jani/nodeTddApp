@@ -14,6 +14,7 @@ const productModel = require('../../models/Product');
 
 const httpMocks = require('node-mocks-http'); // http req, res객체를 생성하기 위한 패키지
 const newProduct = require('../data/new-product.json');
+const allProducts = require('../data/all-products.json');
 
 productModel.create = jest.fn(); // spy...를 통해 실제 모델에서 create함수가 호출이 되었는지 유무를 체크한다.
 productModel.find = jest.fn();
@@ -76,8 +77,23 @@ describe('Product Controller Get', () => {
     expect(typeof productController.getProducts).toBe('function');
   });
 
+  // 해당 메소드가 호출이 잘 되는지 테스트
   it('should call ProductModel.find({})', async () => {
     await productController.getProducts(req, res, next);
+    // find 할 때 빈 객체를 넣어주면, 아무 필터링 없이 전체 데이터를 불러오는 게 된다.
     expect(productModel.find).toHaveBeenCalledWith({});
+  });
+
+  // response 테스트
+  it('should return 200 response', async () => {
+    await productController.getProducts(req, res, next);
+    expect(res.statusCode).toBe(200);
+    expect(res._isEndCalled).toBeTruthy(); // send를 테스트 합니다. (아래에서 jsonData를 받아야 해서 json으로 바뀜)
+  });
+
+  it('should return json body in response', async () => {
+    productModel.find.mockReturnValue(allProducts);
+    await productController.getProducts(req, res, next);
+    expect(res._getJSONData()).toStrictEqual(allProducts);
   });
 });

@@ -20,7 +20,9 @@ exports.createProduct = async (req, res, next) => {
 
 exports.getProducts = async (req, res, next) => {
   try {
-    await productModel.find({});
+    const allProducts = await productModel.find({});
+    // res.status(200).send();
+    res.status(200).json(allProducts);
   } catch (error) {
     console.log(error);
   }
