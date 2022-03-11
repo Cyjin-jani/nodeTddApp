@@ -19,9 +19,9 @@ app.use(express.json()); // 미들웨어 내장함수 bodyParser 모듈을 대�
 
 app.use('/api/products', productRoutes);
 
-app.get('/', (req, res) => {
-  res.send('Hello World');
-});
+// app.get('/', (req, res) => {
+//   res.send('Hello World');
+// });
 
 // error handle을 위한 미들웨어
 app.use((error, req, res, next) => {

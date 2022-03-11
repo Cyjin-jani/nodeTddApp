@@ -91,9 +91,19 @@ describe('Product Controller Get', () => {
     expect(res._isEndCalled).toBeTruthy(); // send를 테스트 합니다. (아래에서 jsonData를 받아야 해서 json으로 바뀜)
   });
 
+  // json return data 테스트
   it('should return json body in response', async () => {
     productModel.find.mockReturnValue(allProducts);
     await productController.getProducts(req, res, next);
     expect(res._getJSONData()).toStrictEqual(allProducts);
+  });
+
+  // 에러처리 test
+  it('should handle errors', async () => {
+    const errorMessage = { message: 'Error finding product data' };
+    const rejectedPromise = Promise.reject(errorMessage);
+    productModel.find.mockReturnValue(rejectedPromise);
+    await productController.getProducts(req, res, next);
+    expect(next).toHaveBeenCalledWith(errorMessage);
   });
 });
