@@ -18,6 +18,9 @@ const allProducts = require('../data/all-products.json');
 
 productModel.create = jest.fn(); // spy...를 통해 실제 모델에서 create함수가 호출이 되었는지 유무를 체크한다.
 productModel.find = jest.fn();
+productModel.findById = jest.fn();
+
+const productId = 'dwqd2178ejhdw';
 
 // 테스트에서 반복되는 부분들을 미리 실행해주는 beforeEach메서드
 let req, res, next;
@@ -105,5 +108,42 @@ describe('Product Controller Get', () => {
     productModel.find.mockReturnValue(rejectedPromise);
     await productController.getProducts(req, res, next);
     expect(next).toHaveBeenCalledWith(errorMessage);
+  });
+});
+
+describe('product controller getById', () => {
+  it('should have a getProductById', () => {
+    expect(typeof productController.getProductById).toBe('function');
+  });
+
+  it('should call productModel.findById', async () => {
+    req.params.productId = productId;
+    await productController.getProductById(req, res, next);
+    expect(productModel.findById).toBeCalledWith(productId);
+  });
+
+  it('should return json body and response code 200', async () => {
+    productModel.findById.mockReturnValue(newProduct);
+    await productController.getProductById(req, res, next);
+    expect(res.statusCode).toBe(200);
+    expect(res._getJSONData()).toStrictEqual(newProduct);
+    expect(res._isEndCalled()).toBeTruthy();
+  });
+
+  // error 핸들링
+  it('should return 404 when item dose not exist', async () => {
+    productModel.findById.mockReturnValue();
+    await productController.getProductById(req, res, next);
+    expect(res.statusCode).toBe(404);
+    expect(res._isEndCalled()).toBeTruthy();
+  });
+
+  it('should handle errors', async () => {
+    const errorMsg = { message: 'error' };
+    const rejectedPromise = Promise.reject(errorMsg);
+    productModel.findById.mockReturnValue(rejectedPromise);
+    await productController.getProductById(req, res, next);
+
+    expect(next).toHaveBeenCalledWith(errorMsg);
   });
 });
