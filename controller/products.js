@@ -37,10 +37,6 @@ exports.getProductById = async (req, res, next) => {
       res.status(404).send();
     }
   } catch (error) {
-    console.log(
-      '🚀 ~ file: products.js ~ line 40 ~ exports.getProductById= ~ error',
-      error
-    );
     next(error);
   }
 };
