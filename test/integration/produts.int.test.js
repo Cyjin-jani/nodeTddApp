@@ -60,3 +60,19 @@ it('GET id does not exist /api/products/:productId', async () => {
   );
   expect(response.statusCode).toBe(404); // 존재하지 않는 아이디를 요청했기 때문.
 });
+
+it('PUT /api/products', async () => {
+  const res = await request(app)
+    .put('/api/products/' + firstProduct._id)
+    .send({ name: 'updated name', description: 'updated description' });
+  expect(res.statusCode).toBe(200);
+  expect(res.body.name).toBe('updated name');
+  expect(res.body.description).toBe('updated description');
+});
+
+it('should return 404 on PUT /api/products/:productId', async () => {
+  const res = await request(app)
+    .put('/api/products/' + '622375b2ef65944f45f56689')
+    .send({ name: 'updated name', description: 'updated description' });
+  expect(res.statusCode).toBe(404);
+});
